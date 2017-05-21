@@ -65,3 +65,13 @@ create table Statusy(
 Id_S int auto_increment primary key,
 Status varchar(20) not null
 );
+
+create view Liczba_zadan_dla_Poszczegolnego_serwisantaa as select ID_z, tytul,Serwisant from zgloszenia where Serwisant;
+
+create view Liczba_zadan_dla_Poszczegolnego_zglaszajacego as select ID_z, tytul,Opis,zglaszajacy from zgloszenia where Serwisant;
+
+create view Przedawnione as select ID_z,Tytul,Opis,Zglaszajacy,Serwisant,Data from zgloszenie where datediff(now())-datediff((Data))>30;
+
+create view Podzial_na_dzialy as select ID_Login,Imie,Nazwisko,Obsluga_dzialu from serwisanci where Obsluga_dzialu;
+
+create view Liczba_zrealizowanych_na_serwisanta as select count(ID_Z) from zgloszenia where  Status="4" group by Serwisant;
