@@ -105,6 +105,17 @@ insert into serwisanci (ID_Login,Imie,Nazwisko,E_mail,Obsluga_dzialu) values (1,
 																			 (9,"Ada","Tomaszek","Ada.Tomaszek@o2.pl",4),
 																			 (11,"Filip","Janass","Filip.Janass@o2.pl",2),
 																			 (13,"Basia","Barbara","Basia.Barbara@o2.pl",2);
+
+drop table dzialy;
+drop table logowanie;
+drop table priorytety;
+drop table serwisanci;
+drop table statusy;
+drop table zglaszajacy;
+drop table zgloszenia;
+
+
+
 																			
 insert into zglaszajacy (ID_Login,Imie,Nazwisko,E_mail) values 	(3,"Tomek","Zachariasz","Tomek.Zachariasz@o2.pl"),
 																(4,"Ala","Duda","Ala.Duda@o2.pl"),
@@ -113,17 +124,33 @@ insert into zglaszajacy (ID_Login,Imie,Nazwisko,E_mail) values 	(3,"Tomek","Zach
 																(10,"Ola","Olek","Ola.Olek@o2.pl"),
 																(12,"Witek","Hanys","Witek.Hanys@o2.pl");
                                                                 
-insert into zgloszenia (Tytul,Opis,Zglaszajacy,Serwisant,Status,Data,Priorytet)  values ()                                                              
+insert into zgloszenia (Tytul,Opis,Zglaszajacy,Serwisant,Status,Data,Priorytet)  values ("Awaria Laptopa","Nie uruchamia się",3,2,1,"2017.03.20",2),
+																						("Bląd w aplikacji","zly foramt daty w tescie.exe",5,3,1,"2017.03.23",3),
+                                                                                        ("Dodanie uzytkownika do CRM","Dodanie uzytkownika do CRM",6,4,3,"2017.03.19",1),
+                                                                                        ("Mysz do Laptopa","Nie działa mysz",4,7,2,"2017.03.24",2),
+                                                                                        ("Nie mam dostępu do sieci","Mam ! na znaczku polaczenia ethernet",2,1,3,"2017.03.22",4),
+                                                                                        ("Ponowna Awaria Laptopa","Znow sie nie uruchamia się",3,2,1,"2017.03.22",4);
+                                                              
 																			
 
 ############################ Tworzenie Widoków################################################
-create view Liczba_zadan_dla_Poszczegolnego_serwisantaa as select ID_z, tytul,Serwisant from zgloszenia where Serwisant;
+create view Liczba_zadan_dla_Poszczegolnego_serwisantaa as select ID_z, tytul, serwisanci.imie as imie , serwisanci.nazwisko as nazwisko from zgloszenia, serwisanci   where serwisant and serwisanci.id_ser=zgloszenia.serwisant;
 
-create view Liczba_zadan_dla_Poszczegolnego_zglaszajacego as select ID_z, tytul,Opis,zglaszajacy from zgloszenia where Serwisant;
+drop view Liczba_zadan_dla_Poszczegolnego_serwisantaa;
 
-create view Przedawnione as select ID_z,Tytul,Opis,Zglaszajacy,Serwisant,Data from zgloszenie where datediff(now())-datediff((Data))>30;
+create view Liczba_zadan_dla_Poszczegolnego_zglaszajacego as select ID_z, tytul ,Opis,zglaszajacy.imie as imie, zglaszajacy.nazwisko as nazwisko from zgloszenia,zglaszajacy where zglaszajacy and zglaszajacy.id_zg=zgloszenia.zglaszajacy;
 
-create view Podzial_na_dzialy as select ID_Login,Imie,Nazwisko,Obsluga_dzialu from serwisanci where Obsluga_dzialu;
+drop view Liczba_zadan_dla_Poszczegolnego_serwisantaa;
 
-create view Liczba_zrealizowanych_na_serwisanta as select count(ID_Z) as liczbaZgloszen, Serwisant from zgloszenia where  Status="4" group by Serwisant;
+create view Przedawnione as select ID_z,Tytul,Opis, zglaszajacy.Imie as imie_zgl, zglaszajacy.Nazwisko as nazwisko_zgl, serwisanci.Imie as imie_ser , serwisanci.nazwisko as nazwisko_ser,Data, now() as Bieżaca_Data from zgloszenia, zglaszajacy, serwisanci where (datediff(now(),Data))>30 and serwisanci.id_ser=zgloszenia.serwisant and zglaszajacy.id_zg=zgloszenia.zglaszajacy;
 
+drop view Przedawnione;
+
+create view Podzial_na_dzialy as select ID_Login,Imie,Nazwisko,dzialy.typ_dzialu from serwisanci, dzialy where Obsluga_dzialu and dzialy.id_d=serwisanci.obsluga_dzialu;
+
+drop view Podzial_na_dzialy;
+
+
+create view Liczba_zrealizowanych_na_serwisanta as select count(ID_Z) as liczbaZgloszen, serwisanci.imie as imie , serwisanci.nazwisko from zgloszenia,serwisanci where  Status="3" and serwisanci.id_ser=zgloszenia.serwisant group by Serwisant;
+
+drop view Liczba_zrealizowanych_na_serwisanta;
