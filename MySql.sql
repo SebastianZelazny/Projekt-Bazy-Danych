@@ -46,7 +46,8 @@ create table Logins(
 ID_L int primary key auto_increment,
 Login varchar(50) unique not null,
 password varchar(50) not null,
-Role varchar(10)
+Role varchar(10),
+Locked boolean default false
 );
 
 create table Divisions(
@@ -94,7 +95,8 @@ insert into Logins (Login,password,Role) values  ('AdamK','AdamK123','rep'),
 											('OlaO','OlaO123','req'),
 											('FilipJ','FilipJ123','rep'),
 											('WitekH','WitekH123','req'),
-											('BasiaB','BasiaB123','rep');
+											('BasiaB','BasiaB123','rep'),
+                                            ('Sebaz','SebaZ123','adm');
                                             
 insert into repairers (ID_Login_rep,Name_rep,Surname_rep,E_mail_rep,division) values (1,"Adam","Kurek","adam.kurek@o2.pl",5),
 																			 (2,"Jurek","Borys","Jurek.Borys@o2.pl",2),
@@ -154,10 +156,15 @@ drop view list_of_repairers;
 drop view view_request_how_repairer;
 drop view view_request_how_requester;
 
+
 ################################# Testowe Zapytania ##############################################
 
 select ID_Z,Title,description,priority_p,E_mail_rep,E_mail_req,Status_s,Data_R from view_request_how_requester where login='witekh';
 
-select * from repairers left join logins on repairers.ID_Login_rep=logins.ID_L where logins.login='kubaw'
+select * from repairers left join logins on repairers.ID_Login_rep=logins.ID_L where logins.login='kubaw';
  
+select * from logins left join repairers on repairers.ID_Login_rep=logins.ID_L where logins.login='kubaw';
+
+select * from logins left join requester on requester.ID_Login_req=logins.ID_L where logins.login='kubaw';
+
 
