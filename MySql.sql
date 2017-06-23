@@ -168,3 +168,4 @@ select * from logins left join repairers on repairers.ID_Login_rep=logins.ID_L w
 select * from logins left join requester on requester.ID_Login_req=logins.ID_L where logins.login='kubaw';
 
 
+SELECT * FROM requester left join logins on requester.ID_Login_req=logins.ID_L where logins.login="tomekz"
